@@ -41,9 +41,9 @@ app.use(
   )
 );
 
-app.get("/", (req, res) => {
-  res.send("<h1>The Phonebook</h1>");
-});
+// app.get("/", (req, res) => {
+//   res.send("<h1>The Phonebook</h1>");
+// });
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
