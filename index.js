@@ -1,31 +1,21 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require('cors');
+const mongoose = require('mongoose');
+const { response } = require("express");
 
 const app = express();
+const password = process.env.PASSWORD;
+const url =
+  `mongodb+srv://fullstack:${password}@trainingcluster.ij3b2.mongodb.net/phonebook-app?retryWrites=true&w=majority`;
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
-let persons = [
-  {
-    id: 2,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 3,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-  {
-    id: 5,
-    name: "Ada Lovelace",
-    number: "23423",
-  },
-  {
-    id: 6,
-    name: "Arto Hellace",
-    number: "(234)-223-3421",
-  },
-];
+const phonebookSchema = new mongoose.Schema({
+  name: String,
+  number: String
+})
+
+const Person = mongoose.model('Person', phonebookSchema);
 
 morgan.token("request-body", (req, res) => {
   if (req.body.name)
@@ -42,7 +32,9 @@ app.use(
 );
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Person.find({}).then(people => {
+    response.json(people)
+  })
 });
 
 app.get("/info", (req, res) => {
