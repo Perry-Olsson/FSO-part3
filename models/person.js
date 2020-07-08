@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const url = process.env.MONGODB_URI
 
-console.log('connecting to database');
+console.log('connecting to database...');
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
@@ -13,8 +13,14 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     })
 
 const phonebookSchema = new mongoose.Schema({
-    name: String,
-    number: String
+    name: {
+        type: String,
+        required: true
+    },
+    number: {
+        type: String,
+        required: true
+    }
 })
 
 phonebookSchema.set('toJSON', {
