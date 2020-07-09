@@ -73,8 +73,11 @@ app.put("/api/persons/:id", (req, res, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  Person.findOneAndUpdate({_id:req.params.id}, person, { runValidators: true, context: 'query', new: true})
   .then(updatedPerson => {
+    if (!updatedPerson){
+      return res.status(404).json({type: 'notFound', error: `${person.name} was was not found in the phonebook`})
+    }
     res.json(updatedPerson);
   })
   .catch(error => next(error));
@@ -95,12 +98,14 @@ const unknownEndpoint = (req, res) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
+  console.error(error);
 
   if (error.name === 'CastError') 
     return res.status(400).send({error: 'malformatted id'});
   else if (error.name === 'ValidationError')
     return res.status(400).json({error: error.message})
+  else if (error.name === 'Person missing')
+    return res.status(404).json({error: error.message})
 
   next(error);
 }
