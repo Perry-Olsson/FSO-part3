@@ -76,7 +76,7 @@ app.put('/api/persons/:id', (req, res, next) => {
   Person.findOneAndUpdate({ _id:req.params.id }, person, { runValidators: true, context: 'query', new: true })
     .then(updatedPerson => {
       if (!updatedPerson){
-        return res.status(404).json({ type: 'notFound', error: `${person.name} was was not found in the phonebook` })
+        return res.status(404).json({ type: 'notFound', error: `${person.name} was not found in the phonebook` })
       }
       res.json(updatedPerson)
     })
